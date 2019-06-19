@@ -38,7 +38,7 @@ class Father(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
         container.grid_rowconfigure(0, weight=1)
         self.frames = {}
-        for F in (StartPage, RegFrame, RegFrame, VoipFrame):
+        for F in (StartPage, RegFrame, LogFrame, VoipFrame):
             frame = F(container, self)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
@@ -52,7 +52,7 @@ class Father(tk.Tk):
 class StartPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        tk.Button(self, text="Login", height="2", width="30", font=LARGE_FONT, command=lambda :controller.show_frame(RegFrame)).pack(anchor="center", side="top")
+        tk.Button(self, text="Login", height="2", width="30", font=LARGE_FONT, command=lambda :controller.show_frame(LogFrame)).pack(anchor="center", side="top")
         tk.Label(self, text="").pack()
         tk.Button(self, text="Register", height="2", width="30", font=LARGE_FONT, command=lambda: controller.show_frame(RegFrame)).pack(anchor="center", side="top")
 
@@ -104,7 +104,7 @@ class RegFrame(tk.Frame):
             lab2.pack(side="bottom", anchor="center")
 
 
-class RegFrame(tk.Frame):
+class LogFrame(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.username = tk.StringVar()
@@ -138,8 +138,9 @@ class RegFrame(tk.Frame):
         text = s.recv(size)
         if "1" in text:
             lab = tk.Label(self, text="Logged in Successfully")
+            button = tk.Button(self, text="go to chat", height="1", width="10", command=lambda: self.controller.show_frame(VoipFrame))
+            button.pack()
             lab.pack(side="bottom", anchor="center")
-            button = tk.Button(self, text="go to chat", height="1", width="10", command=lambda: self.controller.show_frame(VoipFrame)).pack()
         elif "2" in text:
             lab2 = tk.Label(self, text="One of the credentials is wrong!")
             lab2.pack(side="bottom", anchor="center")

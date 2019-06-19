@@ -64,12 +64,10 @@ def analyze_data(client):
 def validator(data):
     username = str(data[0])
     password = str(data[1])
-    print 'username: '+username
-    print 'password: '+password
     print 'len1: '+str(len(db.search(user.name == username)))
     print 'len2: '+str(len(db.search(user.password == password)))
-    if len(db.search(user.name == username)) == len(db.search(user.password == password)):
-        print 'true'
+    if len(db.search(user.name == username)) == len(db.search(user.password == password)) &\
+            len(db.search(user.name == username))>0 :
         return "1"
     else:
         return "2"
@@ -86,6 +84,7 @@ def credentials_clipper(data):
         l[c] = item
         c += 1
     return l
+
 
 def broadcast(data, client):
     for person in clients:
