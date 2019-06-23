@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 import pyaudio
 import socket
-from tinydb import TinyDB, Query
+from tinydb import *
 from threading import Thread
+import numpy
 import sys
 global clients
 clients = []
@@ -47,7 +48,6 @@ def analyze_data(client):
     while True:
         try:
             data = client.recv(size)
-            print data
             if data[0] == "1":
                 answer = register_handler(credentials_clipper(data[1:]))
                 client.send(answer)
@@ -57,17 +57,13 @@ def analyze_data(client):
             if data:
                 broadcast(data, client)
 
-        except socket.error:  # Possibly client has left the chat
+        except socket.error and IndexError:  # Possibly client has left the chat
             pass
-
 
 def validator(data):
     username = str(data[0])
     password = str(data[1])
-    print 'len1: '+str(len(db.search(user.name == username)))
-    print 'len2: '+str(len(db.search(user.password == password)))
-    if len(db.search(user.name == username)) == len(db.search(user.password == password)) &\
-            len(db.search(user.name == username))>0 :
+    if db.contains(where('name') == username and where('password') == password):
         return "1"
     else:
         return "2"
@@ -87,16 +83,16 @@ def credentials_clipper(data):
 
 
 def broadcast(data, client):
-    for person in clients:
-        if person != client:
+    for c in clients:
+        if c != client:
             stream.write(data)
-            person.send("ACK")
+            client.send("ACK")
 
 
 def register_handler(data):
     print "username: "+str(data[0])
     print "password: " + str(data[1])
-    if len(db.search(user.name == data[0])) == 1:
+    if db.contains(where('name') == data[0]):
         return "2"
     else:
         db.insert({'name': data[0], 'password': data[1]})

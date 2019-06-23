@@ -1,10 +1,10 @@
 import pyaudio
 import socket
-import sys
-import time
 import threading
 import Tkinter as tk
-import pickle
+import numpy
+
+
 
 # Pyaudio Initialization
 chunk = 1024
@@ -164,7 +164,8 @@ class VoipFrame(tk.Frame):
         print "You are now speaking"
         while self.mute is False:
             data = stream.read(chunk)
-            s.send(data)
+            d = numpy.fromstring(data, 'int16')
+            s.send(d)
             s.recv(size)
 
     def create_widgets(self):
